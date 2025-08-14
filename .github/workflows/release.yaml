@@ -6,6 +6,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   deploy:
     name: Deploy
@@ -21,9 +26,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: "${{ secrets.GITHUB_REF_NAME }}"
-          persist-credentials: false
+          # Don't use the ref parameter as it can cause issues
+          # Instead, let GitHub Actions check out the default branch that triggered the workflow
+          fetch-depth: 0
+          # We want to use the GitHub token for authentication
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Semantic Release
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # If you're publishing to npm, you would add NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
