@@ -1,6 +1,6 @@
 {
     "branches": [
-        "project-setup"
+        "main"
     ],
     "tagFormat": "v${version}",
     "plugins": [
