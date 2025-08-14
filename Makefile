@@ -48,15 +48,15 @@ dev: ## Dev runner with live reloading
 	@(cd web && node esbuild.js --watch & air -c .air.toml & trap 'kill 0' INT TERM EXIT; wait)
 
 .PHONY: init
-init: deps ## Initialize local environment for development
-	go install github.com/air-verse/air@v1.62.0
-	go install mvdan.cc/gofumpt@latest
-	go install golang.org/x/tools/cmd/goimports@latest
+init: deps ## Initialize local environment for development (also installs dependencies)
+	$(GO) install github.com/air-verse/air@v1.62.0
 	pre-commit install
 	pre-commit install --hook-type commit-msg
 
 .PHONY: deps
 deps: ## Install dependencies
+	$(GO) install mvdan.cc/gofumpt@latest
+	$(GO) install golang.org/x/tools/cmd/goimports@latest
 	$(GO) mod tidy
 	$(GO) mod download
 	$(GO) mod verify
