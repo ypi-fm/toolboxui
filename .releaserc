@@ -1,0 +1,51 @@
+{
+    "branches": [
+        "project-setup"
+    ],
+    "tagFormat": "v${version}",
+    "plugins": [
+        [
+            "@semantic-release/commit-analyzer",
+            {
+                "preset": "angular",
+                "releaseRules": [
+                    { "message": "*", "release": "patch" },
+                    { "message": "feat:*", "release": "minor" },
+                    { "message": "feat!:*", "release": "major" }
+                ]
+            }
+        ],
+        [
+            "@semantic-release/release-notes-generator",
+            {
+                "preset": "conventionalcommits",
+                "presetConfig": {
+                    "header": "CHANGELOG",
+                    "types": [
+                        { "type": "feat!", "section": "Breaking Changes" },
+                        { "type": "feat", "section": "Features" },
+                        { "type": "fix", "section": "Bug Fixes" },
+                        { "type": "perf", "section": "Performance Improvements" },
+                        { "type": "test", "section": "Tests" },
+                        { "type": "build", "section": "Build System" },
+                        { "type": "ci", "section": "CI/CD" },
+                        { "type": "revert", "section": "Reverts" },
+                        { "type": "chore", "section": "Chores" }
+                    ]
+                }
+            }
+        ],
+        [
+            "@semantic-release/npm",
+            { "npmPublish": false, "pkgRoot": "web" }
+        ],
+        [
+            "@semantic-release/git",
+            {
+              "assets": ["web/package.json", "web/package-lock.json"],
+              "message": "chore(release): toolboxui ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+            }
+        ],
+        "@semantic-release/github"
+    ]
+}

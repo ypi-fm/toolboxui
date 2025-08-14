@@ -1,0 +1,29 @@
+
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install Semantic Release and Plugins
+        run: |
+          npm install -g semantic-release @semantic-release/git @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/npm @semantic-release/github conventional-changelog-conventionalcommits
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ secrets.GITHUB_REF_NAME }}"
+          persist-credentials: false
+      - name: Semantic Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
