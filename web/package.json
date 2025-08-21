@@ -9,7 +9,10 @@
   "license": "BSD-3-Clause",
   "description": "",
   "dependencies": {
-    "lit": "^3.3.1"
+    "@shoelace-style/shoelace": "^2.20.1",
+    "echarts": "^6.0.0",
+    "lit": "^3.3.1",
+    "slickgrid": "^5.15.5"
   },
   "devDependencies": {
     "esbuild": "^0.25.8",
