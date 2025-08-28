@@ -1,4 +1,7 @@
-// TypeScript Hello World program
-export function greet (name: string): string {
-  return `Hello, ${name}!`
-}
+// Controllers
+import { startClock } from './controllers'
+
+// Components
+import './testelement'
+
+startClock()

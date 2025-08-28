@@ -11,8 +11,9 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.20.1",
     "echarts": "^6.0.0",
+    "slickgrid": "^5.15.5",
     "lit": "^3.3.1",
-    "slickgrid": "^5.15.5"
+    "@lit-labs/signals": "^0.1.3"
   },
   "devDependencies": {
     "esbuild": "^0.25.8",

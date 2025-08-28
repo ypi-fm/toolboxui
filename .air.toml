@@ -10,3 +10,8 @@ include_ext = ["go", "tpl", "tmpl", "html", "js", "css"]
 
 [log]
 time = true
+
+[proxy]
+enabled = true
+proxy_port = 8080
+app_port = 8081

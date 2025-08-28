@@ -34,14 +34,14 @@ func main() {
 	})))
 
 	// Example: Root just serves a fixed HTML string referencing index.js
-	indexHTML := "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><title>ToolboxUI</title><h1>ToolboxUI</h1><script type=\"module\" src=\"/assets/" + js + "\" defer></script>"
+	indexHTML := "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><script type=\"module\" src=\"/assets/" + js + "\" defer></script><title>ToolboxUI</title><body><h1>ToolboxUI</h1><test-element name=\"ToolboxUI\"></test-element></body>"
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write([]byte(indexHTML))
 	})
 
 	// Serve
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(":8081", mux); err != nil {
 		fmt.Println("Server error:", err)
 	}
 }
