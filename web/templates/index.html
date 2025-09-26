@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ToolboxUI</title>
+    <link rel="stylesheet" href="{{.CSS}}" />
+    <script type="module" src="{{.JS}}" defer></script>
+  </head>
+  <body>
+    <h1>ToolboxUI</h1>
+
+  <sl-breadcrumb>
+    <sl-breadcrumb-item>Catalog</sl-breadcrumb-item>
+    <sl-breadcrumb-item>Clothing</sl-breadcrumb-item>
+    <sl-breadcrumb-item>Women's</sl-breadcrumb-item>
+    <sl-breadcrumb-item>Shirts &amp; Tops</sl-breadcrumb-item>
+  </sl-breadcrumb>
+
+    <h2>Chart Component</h2>
+    <tbx-chart></tbx-chart>
+
+    <h2>Grid Component</h2>
+    <tbx-grid></tbx-grid>
+
+    <h2>Form Component</h2>
+    <tbx-form></tbx-form>
+
+    <h2>Markdown Component</h2>
+    <tbx-markdown>
+      <script type="text/markdown">
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+      </script>
+    </tbx-markdown>
+
+    <h2>Demo Component</h2>
+    <tbx-testelement name="ToolboxUI"></tbx-testelement>
+
+    <h2>Console Component</h2>
+    <tbx-console></tbx-console>
+  </body>
+</html>
