@@ -29,7 +29,8 @@ const buildOptions = {
   format: 'esm',
   loader: {
     '.ts': 'ts',
-    '.tsx': 'tsx'
+    '.tsx': 'tsx',
+    '.css': 'css'
   },
   entryNames: `${name}`,
   chunkNames: `chunks/${name}`,
