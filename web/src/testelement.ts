@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { SignalWatcher } from '@lit-labs/signals'
 import { clock } from './controllers'
 
-@customElement('test-element')
+@customElement('tbx-testelement')
 export class TestElement extends SignalWatcher(LitElement) {
   @property()
     name?: string
