@@ -5767,6 +5767,10 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       display: none;
     }
 
+    sl-split-panel::part(end) {
+      min-width: 0;
+    }
+
     nav.tree-panel {
       height: 100%;
       overflow: auto;
@@ -5784,6 +5788,33 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
     .content-panel {
       padding: 0 0 2rem 1.5rem;
       box-sizing: border-box;
+      width: 100%;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    ::slotted(*) {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    ::slotted(tbx-chart),
+    ::slotted(tbx-grid),
+    ::slotted(tbx-clock),
+    ::slotted(tbx-form),
+    ::slotted(tbx-markdown),
+    ::slotted(tbx-console) {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    ::slotted(pre),
+    ::slotted(code),
+    ::slotted(table),
+    ::slotted(tbx-console) {
+      overflow-x: auto;
     }
 
     @media (max-width: 768px) {
@@ -5795,6 +5826,9 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       }
       header.page-header {
         gap: 0.75rem;
+      }
+      .content-panel {
+        padding: 0 0 2rem 0;
       }
     }
 
