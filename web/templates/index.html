@@ -31,44 +31,36 @@
     <script type="module" src="{{.JS}}" defer></script>
   </head>
   <body>
-    <header class="page-header">
-      <h1>ToolboxUI</h1>
-      <tbx-theme-toggle></tbx-theme-toggle>
-    </header>
+    <tbx-page-menu page-title="ToolboxUI">
+      <tbx-theme-toggle slot="actions"></tbx-theme-toggle>
 
-    <sl-breadcrumb>
-      <sl-breadcrumb-item>Catalog</sl-breadcrumb-item>
-      <sl-breadcrumb-item>Clothing</sl-breadcrumb-item>
-      <sl-breadcrumb-item>Women's</sl-breadcrumb-item>
-      <sl-breadcrumb-item>Shirts &amp; Tops</sl-breadcrumb-item>
-    </sl-breadcrumb>
+      <h2>Chart Component</h2>
+      <tbx-chart></tbx-chart>
 
-    <h2>Chart Component</h2>
-    <tbx-chart></tbx-chart>
+      <h2>Grid Component</h2>
+      <tbx-grid></tbx-grid>
 
-    <h2>Grid Component</h2>
-    <tbx-grid></tbx-grid>
+      <h2>Clock Component</h2>
+      <tbx-clock timezone="UTC"></tbx-clock>
+      <tbx-clock timezone="America/New_York"></tbx-clock>
+      <tbx-clock timezone="America/Chicago"></tbx-clock>
+      <tbx-clock timezone="America/Denver"></tbx-clock>
+      <tbx-clock timezone="America/Los_Angeles"></tbx-clock>
 
-    <h2>Clock Component</h2>
-    <tbx-clock timezone="UTC"></tbx-clock>
-    <tbx-clock timezone="America/New_York"></tbx-clock>
-    <tbx-clock timezone="America/Chicago"></tbx-clock>
-    <tbx-clock timezone="America/Denver"></tbx-clock>
-    <tbx-clock timezone="America/Los_Angeles"></tbx-clock>
+      <h2>Form Component</h2>
+      <tbx-form></tbx-form>
 
-    <h2>Form Component</h2>
-    <tbx-form></tbx-form>
-
-    <h2>Markdown Component</h2>
-    <tbx-markdown>
-      <script type="text/markdown">
+      <h2>Markdown Component</h2>
+      <tbx-markdown>
+        <script type="text/markdown">
 **The Cauchy-Schwarz Inequality**
 
 $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
-      </script>
-    </tbx-markdown>
+        </script>
+      </tbx-markdown>
 
-    <h2>Console Component</h2>
-    <tbx-console></tbx-console>
+      <h2>Console Component</h2>
+      <tbx-console></tbx-console>
+    </tbx-page-menu>
   </body>
 </html>
