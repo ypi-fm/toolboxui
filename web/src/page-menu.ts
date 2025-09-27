@@ -166,6 +166,11 @@ export class TbxPageMenu extends LitElement {
       flex-wrap: wrap;
     }
 
+    .menu-toolbar sl-breadcrumb {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
     sl-icon-button::part(base) {
       font-size: 1.25rem;
     }
@@ -225,6 +230,16 @@ export class TbxPageMenu extends LitElement {
       }
       header.page-header tbx-theme-toggle {
         margin-left: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .menu-toolbar sl-breadcrumb-item:not(:last-of-type) {
+        display: none;
+      }
+
+      .menu-toolbar sl-breadcrumb-item::part(separator) {
+        display: none;
       }
     }
   `

@@ -5740,6 +5740,11 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       flex-wrap: wrap;
     }
 
+    .menu-toolbar sl-breadcrumb {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
     sl-icon-button::part(base) {
       font-size: 1.25rem;
     }
@@ -5799,6 +5804,16 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       }
       header.page-header tbx-theme-toggle {
         margin-left: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .menu-toolbar sl-breadcrumb-item:not(:last-of-type) {
+        display: none;
+      }
+
+      .menu-toolbar sl-breadcrumb-item::part(separator) {
+        display: none;
       }
     }
   `,je([L({type:String,attribute:"page-title"})],Hr.prototype,"pageTitle",2),je([le()],Hr.prototype,"selectedId",2),je([le()],Hr.prototype,"panelOpen",2),je([le()],Hr.prototype,"panelPosition",2),Hr=je([kt("tbx-page-menu")],Hr);gs("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/dist/");
