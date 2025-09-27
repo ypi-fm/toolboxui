@@ -5768,7 +5768,7 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
     }
 
     sl-split-panel::part(end) {
-      min-width: 0;
+      min-width: 320px;
     }
 
     nav.tree-panel {
@@ -5789,7 +5789,7 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       padding: 0 0 2rem 1.5rem;
       box-sizing: border-box;
       width: 100%;
-      min-width: 0;
+      min-width: 320px;
       overflow-wrap: anywhere;
       word-break: break-word;
     }
@@ -5826,9 +5826,6 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       }
       header.page-header {
         gap: 0.75rem;
-      }
-      .content-panel {
-        padding: 0 0 2rem 0;
       }
     }
 

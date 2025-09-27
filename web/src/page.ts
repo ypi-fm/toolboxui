@@ -194,7 +194,7 @@ export class TbxPage extends LitElement {
     }
 
     sl-split-panel::part(end) {
-      min-width: 0;
+      min-width: 320px;
     }
 
     nav.tree-panel {
@@ -215,7 +215,7 @@ export class TbxPage extends LitElement {
       padding: 0 0 2rem 1.5rem;
       box-sizing: border-box;
       width: 100%;
-      min-width: 0;
+      min-width: 320px;
       overflow-wrap: anywhere;
       word-break: break-word;
     }
@@ -252,9 +252,6 @@ export class TbxPage extends LitElement {
       }
       header.page-header {
         gap: 0.75rem;
-      }
-      .content-panel {
-        padding: 0 0 2rem 0;
       }
     }
 
