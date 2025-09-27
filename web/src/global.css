@@ -12,12 +12,21 @@ html, body {
 body {
   margin: 0;
   padding: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .page-header {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
 }
 
 .page-header tbx-theme-toggle {

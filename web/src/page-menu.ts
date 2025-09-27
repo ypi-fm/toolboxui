@@ -80,6 +80,7 @@ const PANEL_OPEN_KEY = 'tbx-page-menu:panel-open'
 const PANEL_POSITION_KEY = 'tbx-page-menu:panel-position'
 const SELECTION_KEY = 'tbx-page-menu:selected-node'
 const DEFAULT_PANEL_POSITION = 22
+const NARROW_VIEWPORT_QUERY = '(max-width: 768px)'
 
 function isBrowser (): boolean {
   return typeof window !== 'undefined' && typeof document !== 'undefined'
@@ -119,6 +120,10 @@ export class TbxPageMenu extends LitElement {
   @state()
   private panelPosition = DEFAULT_PANEL_POSITION
 
+  private storedPanelOpen = true
+  private skipNextPersist = false
+  private narrowQuery: MediaQueryList | null = null
+  private narrowQueryListener: ((event: MediaQueryListEvent) => void) | null = null
   private isInitialised = false
 
   static styles = css`
@@ -221,7 +226,13 @@ export class TbxPageMenu extends LitElement {
 
   connectedCallback (): void {
     super.connectedCallback()
+    this.setupViewportWatcher()
     this.restoreState()
+  }
+
+  disconnectedCallback (): void {
+    super.disconnectedCallback()
+    this.teardownViewportWatcher()
   }
 
   firstUpdated (): void {
@@ -236,11 +247,14 @@ export class TbxPageMenu extends LitElement {
 
     try {
       const storedOpen = window.localStorage.getItem(PANEL_OPEN_KEY)
+      let resolvedOpen: boolean
       if (storedOpen === 'true' || storedOpen === 'false') {
-        this.panelOpen = storedOpen === 'true'
+        resolvedOpen = storedOpen === 'true'
       } else {
-        this.panelOpen = !window.matchMedia('(max-width: 768px)').matches
+        resolvedOpen = !window.matchMedia(NARROW_VIEWPORT_QUERY).matches
       }
+      this.storedPanelOpen = resolvedOpen
+      this.panelOpen = resolvedOpen
 
       const storedPosition = window.localStorage.getItem(PANEL_POSITION_KEY)
       if (storedPosition != null) {
@@ -257,17 +271,73 @@ export class TbxPageMenu extends LitElement {
     } catch {
       // Ignore storage errors
     }
+
+    if (this.isNarrowViewport()) {
+      this.forceCollapseForMobile()
+    }
   }
 
   private persistState (): void {
     if (!isBrowser() || !this.isInitialised) return
+    if (this.skipNextPersist) {
+      this.skipNextPersist = false
+      return
+    }
     try {
-      window.localStorage.setItem(PANEL_OPEN_KEY, String(this.panelOpen))
+      window.localStorage.setItem(PANEL_OPEN_KEY, String(this.storedPanelOpen))
       window.localStorage.setItem(PANEL_POSITION_KEY, String(this.panelPosition))
       window.localStorage.setItem(SELECTION_KEY, this.selectedId)
     } catch {
       // ignore storage issues
     }
+  }
+
+  private setupViewportWatcher (): void {
+    if (!isBrowser()) return
+    const query = window.matchMedia(NARROW_VIEWPORT_QUERY)
+    this.narrowQuery = query
+    const listener = (event: MediaQueryListEvent): void => {
+      this.handleViewportChange(event.matches)
+    }
+    this.narrowQueryListener = listener
+
+    if (typeof query.addEventListener === 'function') {
+      query.addEventListener('change', listener)
+    } else if (typeof query.addListener === 'function') {
+      query.addListener(listener)
+    }
+  }
+
+  private teardownViewportWatcher (): void {
+    const query = this.narrowQuery
+    const listener = this.narrowQueryListener
+    if (query != null && listener != null) {
+      if (typeof query.removeEventListener === 'function') {
+        query.removeEventListener('change', listener)
+      } else if (typeof query.removeListener === 'function') {
+        query.removeListener(listener)
+      }
+    }
+    this.narrowQuery = null
+    this.narrowQueryListener = null
+  }
+
+  private handleViewportChange (isNarrow: boolean): void {
+    if (isNarrow) {
+      this.forceCollapseForMobile()
+    } else if (this.panelOpen !== this.storedPanelOpen) {
+      this.panelOpen = this.storedPanelOpen
+    }
+  }
+
+  private forceCollapseForMobile (): void {
+    if (!this.panelOpen) return
+    this.skipNextPersist = true
+    this.panelOpen = false
+  }
+
+  private isNarrowViewport (): boolean {
+    return this.narrowQuery?.matches ?? false
   }
 
   private get selectedPath (): MenuNode[] {
@@ -314,6 +384,9 @@ export class TbxPageMenu extends LitElement {
     if (findPath(MENU_TREE, nodeId) == null) return
     this.selectedId = nodeId
     this.persistState()
+    if (this.isNarrowViewport()) {
+      this.forceCollapseForMobile()
+    }
   }
 
   private handleBreadcrumbClick (nodeId: string): void {
@@ -321,10 +394,14 @@ export class TbxPageMenu extends LitElement {
     if (findPath(MENU_TREE, nodeId) == null) return
     this.selectedId = nodeId
     this.persistState()
+    if (this.isNarrowViewport()) {
+      this.forceCollapseForMobile()
+    }
   }
 
   private readonly handlePanelToggle = (): void => {
     this.panelOpen = !this.panelOpen
+    this.storedPanelOpen = this.panelOpen
     this.persistState()
   }
 
