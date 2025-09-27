@@ -125,26 +125,47 @@ export class TbxPage extends LitElement {
   private skipNextPersist = false
   private narrowQuery: MediaQueryList | null = null
   private narrowQueryListener: ((event: MediaQueryListEvent) => void) | null = null
+  private toolbarObserver: ResizeObserver | null = null
   private isInitialised = false
 
   static styles = css`
     :host {
+      --page-toolbar-height: 0px;
+      --page-shell-padding-inline: clamp(0.75rem, 2vw, 1.5rem);
+      --page-shell-padding-block: clamp(0.85rem, 2vw, 1.5rem);
+      --page-surface: var(--sl-color-neutral-0);
       display: block;
       box-sizing: border-box;
       width: 100%;
+      min-height: 100vh;
+    }
+
+    :host-context(.sl-theme-dark) {
+      --page-surface: var(--sl-color-neutral-950, var(--sl-color-neutral-900));
+    }
+
+    @media (max-width: 640px) {
+      :host {
+        --page-shell-padding-inline: 0rem;
+      }
     }
 
     .page-shell {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 0;
+      min-height: 100vh;
+      padding: var(--page-shell-padding-block) var(--page-shell-padding-inline) 0;
+      background-color: var(--page-surface);
     }
 
     header.page-header {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.65rem;
       flex-wrap: nowrap;
+      margin-inline: calc(-1 * var(--page-shell-padding-inline));
+      padding: 0 max(var(--page-shell-padding-inline), env(safe-area-inset-right)) clamp(0.4rem, 1vw, 0.6rem) max(var(--page-shell-padding-inline), env(safe-area-inset-left));
     }
 
     header.page-header h1 {
@@ -160,10 +181,30 @@ export class TbxPage extends LitElement {
     }
 
     .menu-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       display: flex;
       align-items: center;
       gap: 0.75rem;
       flex-wrap: wrap;
+      padding-block: 0.35rem;
+      margin-inline: calc(-1 * var(--page-shell-padding-inline));
+      padding-inline: max(var(--page-shell-padding-inline), env(safe-area-inset-left)) max(var(--page-shell-padding-inline), env(safe-area-inset-right));
+      background-color: var(--page-toolbar-background, var(--page-surface));
+      border-bottom: 1px solid var(--page-divider-color, var(--sl-color-neutral-200));
+    }
+
+    .menu-toolbar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    :host-context(.sl-theme-dark) .menu-toolbar {
+      --page-toolbar-background: var(--sl-color-neutral-900);
+      --page-divider-color: var(--sl-color-neutral-800);
     }
 
     .menu-toolbar sl-breadcrumb {
@@ -178,8 +219,25 @@ export class TbxPage extends LitElement {
     sl-split-panel {
       width: 100%;
       min-height: 60vh;
+      margin-inline: calc(-1 * var(--page-shell-padding-inline));
+      margin-bottom: calc(-1 * var(--page-shell-padding-block));
+      padding-bottom: var(--page-shell-padding-block);
+      flex: 1 1 auto;
       --min: 200px;
       --max: 25%;
+      --divider-width: 1px;
+      --divider-hit-area: 14px;
+      background-color: var(--page-surface);
+    }
+
+    sl-split-panel::part(start),
+    sl-split-panel::part(end) {
+      background-color: var(--page-surface);
+      padding: 0;
+    }
+
+    sl-split-panel::part(divider) {
+      background-color: var(--page-divider-color, var(--sl-color-neutral-200));
     }
 
     sl-split-panel.collapsed {
@@ -198,26 +256,44 @@ export class TbxPage extends LitElement {
     }
 
     nav.tree-panel {
-      height: 100%;
+      position: sticky;
+      top: var(--page-toolbar-height, 0px);
+      min-height: calc(100vh - var(--page-toolbar-height, 0px));
+      max-height: calc(100vh - var(--page-toolbar-height, 0px));
       overflow: auto;
-      padding: 1rem;
+      padding: clamp(0.25rem, 0.8vw, 0.4rem) clamp(0.4rem, 1vw, 0.55rem) 0;
       box-sizing: border-box;
-      border-right: solid 1px var(--sl-color-neutral-200);
-      background-color: var(--sl-color-neutral-0);
-    }
-
-    :host-context(.sl-theme-dark) nav.tree-panel {
-      border-right: solid 1px var(--sl-color-neutral-600);
-      background-color: var(--sl-color-neutral-900);
+      border-right: solid 1px var(--page-divider-color, var(--sl-color-neutral-200));
+      background-color: var(--page-surface);
     }
 
     .content-panel {
-      padding: 0 0 2rem 1.5rem;
+      padding: clamp(0.4rem, 1vw, 0.65rem) var(--page-shell-padding-inline) var(--page-shell-padding-block) var(--page-shell-padding-inline);
       box-sizing: border-box;
       width: 100%;
       min-width: 320px;
+      overflow-y: visible;
+      overflow-x: auto;
       overflow-wrap: anywhere;
       word-break: break-word;
+      background-color: var(--page-surface);
+    }
+
+    nav.tree-panel sl-tree::part(base) {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    nav.tree-panel sl-tree-item::part(item) {
+      border-radius: 4px;
+    }
+
+    sl-split-panel::part(divider) {
+      background-color: var(--page-divider-color, var(--sl-color-neutral-200));
+    }
+
+    :host-context(.sl-theme-dark) sl-split-panel::part(divider) {
+      background-color: var(--sl-color-neutral-800);
     }
 
     ::slotted(*) {
@@ -284,6 +360,10 @@ export class TbxPage extends LitElement {
   disconnectedCallback (): void {
     super.disconnectedCallback()
     this.teardownViewportWatcher()
+    if (this.toolbarObserver != null) {
+      this.toolbarObserver.disconnect()
+      this.toolbarObserver = null
+    }
   }
 
   firstUpdated (): void {
@@ -291,6 +371,8 @@ export class TbxPage extends LitElement {
     if (!this.panelOpen && this.panelPosition > 0) {
       this.panelPosition = clamp(this.panelPosition, 5, 25)
     }
+
+    this.observeToolbarHeight()
   }
 
   private restoreState (): void {
@@ -371,6 +453,33 @@ export class TbxPage extends LitElement {
     }
     this.narrowQuery = null
     this.narrowQueryListener = null
+  }
+
+  private observeToolbarHeight (): void {
+    if (!isBrowser()) return
+    const toolbar = this.shadowRoot?.querySelector('.menu-toolbar') as HTMLElement | null
+    if (toolbar == null) {
+      this.style.removeProperty('--page-toolbar-height')
+      return
+    }
+
+    const updateHeight = (): void => {
+      const height = toolbar.getBoundingClientRect().height
+      this.style.setProperty('--page-toolbar-height', `${height}px`)
+    }
+
+    updateHeight()
+
+    if (typeof ResizeObserver === 'function') {
+      if (this.toolbarObserver == null) {
+        this.toolbarObserver = new ResizeObserver(() => {
+          updateHeight()
+        })
+      } else {
+        this.toolbarObserver.disconnect()
+      }
+      this.toolbarObserver.observe(toolbar)
+    }
   }
 
   private handleViewportChange (isNarrow: boolean): void {
