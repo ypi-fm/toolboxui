@@ -1,6 +1,7 @@
 # Variables
 BINARY_NAME=toolboxui
 BUILD_DIR=./bin
+WEB_DIR=./web
 GO=go
 GO_BUILD=$(GO) build
 GO_TEST=$(GO) test
@@ -17,7 +18,7 @@ build-go: ## Build Go part only
 .PHONY: build-web
 build-web: ## Build Web part only
 	find web/dist -name "*.js.map" -type f -delete 2>/dev/null || true
-	cd web && node esbuild.js --prod
+	cd $(WEB_DIR) && NODE_ENV=production node esbuild.js --prod
 
 .PHONY: format
 format: format-go format-web ## Check and format all code
@@ -45,7 +46,7 @@ test: ## Test the application
 
 .PHONY: dev
 dev: ## Dev runner with live reloading
-	@(cd web && node esbuild.js --watch & air -c .air.toml & trap 'kill 0' INT TERM EXIT; wait)
+	@(cd web && NODE_ENV=development node esbuild.js --watch & air -c .air.toml & trap 'kill 0' INT TERM EXIT; wait)
 
 .PHONY: init
 init: deps ## Initialize local environment for development (also installs dependencies)

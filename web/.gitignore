@@ -1,5 +1,6 @@
 # Sourcemap files (only needed for development)
 *.js.map
+*.css.map
 
 # Logs
 logs
