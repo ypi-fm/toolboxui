@@ -10,6 +10,7 @@ import '@shoelace-style/shoelace/dist/components/tree/tree.js'
 import '@shoelace-style/shoelace/dist/components/tree-item/tree-item.js'
 
 import type SlSplitPanel from '@shoelace-style/shoelace/dist/components/split-panel/split-panel.js'
+import './theme-toggle'
 type TreeSelectionEvent = CustomEvent<{
   selection: Array<HTMLElement & { dataset: DOMStringMap }>
 }>
@@ -142,20 +143,20 @@ export class TbxPageMenu extends LitElement {
     header.page-header {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: nowrap;
     }
 
     header.page-header h1 {
       font-size: 1.75rem;
       margin: 0;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    header.page-header .actions {
+    header.page-header tbx-theme-toggle {
       margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      flex: 0 0 auto;
     }
 
     .menu-toolbar {
@@ -216,10 +217,14 @@ export class TbxPageMenu extends LitElement {
       header.page-header {
         gap: 0.75rem;
       }
-      header.page-header .actions {
+    }
+
+    @media (max-width: 540px) {
+      header.page-header {
+        flex-wrap: wrap;
+      }
+      header.page-header tbx-theme-toggle {
         margin-left: 0;
-        width: 100%;
-        justify-content: flex-start;
       }
     }
   `
@@ -449,9 +454,7 @@ export class TbxPageMenu extends LitElement {
       <div class="page-shell">
         <header class="page-header">
           <h1>${this.pageTitle}</h1>
-          <div class="actions">
-            <slot name="actions"></slot>
-          </div>
+          <tbx-theme-toggle></tbx-theme-toggle>
         </header>
 
         <div class="menu-toolbar">

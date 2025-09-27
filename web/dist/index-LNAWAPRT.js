@@ -5662,9 +5662,7 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       <div class="page-shell">
         <header class="page-header">
           <h1>${this.pageTitle}</h1>
-          <div class="actions">
-            <slot name="actions"></slot>
-          </div>
+          <tbx-theme-toggle></tbx-theme-toggle>
         </header>
 
         <div class="menu-toolbar">
@@ -5719,20 +5717,20 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
     header.page-header {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: nowrap;
     }
 
     header.page-header h1 {
       font-size: 1.75rem;
       margin: 0;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    header.page-header .actions {
+    header.page-header tbx-theme-toggle {
       margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      flex: 0 0 auto;
     }
 
     .menu-toolbar {
@@ -5793,10 +5791,14 @@ l0,-`+(r+144)+`c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       header.page-header {
         gap: 0.75rem;
       }
-      header.page-header .actions {
+    }
+
+    @media (max-width: 540px) {
+      header.page-header {
+        flex-wrap: wrap;
+      }
+      header.page-header tbx-theme-toggle {
         margin-left: 0;
-        width: 100%;
-        justify-content: flex-start;
       }
     }
   `,je([L({type:String,attribute:"page-title"})],Hr.prototype,"pageTitle",2),je([le()],Hr.prototype,"selectedId",2),je([le()],Hr.prototype,"panelOpen",2),je([le()],Hr.prototype,"panelPosition",2),Hr=je([kt("tbx-page-menu")],Hr);gs("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/dist/");
