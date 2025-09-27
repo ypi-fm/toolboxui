@@ -1,6 +1,3 @@
-import { startClock } from './controllers'
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
-
 // Styles
 import './global.css'
 import '@shoelace-style/shoelace/dist/themes/light.css'
@@ -17,11 +14,10 @@ import './console'
 import './form'
 import './grid'
 import './markdown'
-import './testelement' // TODO: remove entirely, replace with clock component perhaps?
+import './clock'
 import './theme-toggle'
 
 // Configure Shoelace asset lookup (icons, etc.)
-setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/dist/')
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
 
-// Controllers
-startClock()
+setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/dist/')
