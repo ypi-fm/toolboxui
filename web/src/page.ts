@@ -77,9 +77,9 @@ const MENU_TREE: MenuNode = {
 }
 
 const DEFAULT_SELECTED_ID = 'catalog-clothing-womens-shirts-tops'
-const PANEL_OPEN_KEY = 'tbx-page-menu:panel-open'
-const PANEL_POSITION_KEY = 'tbx-page-menu:panel-position'
-const SELECTION_KEY = 'tbx-page-menu:selected-node'
+const PANEL_OPEN_KEY = 'tbx-page:panel-open'
+const PANEL_POSITION_KEY = 'tbx-page:panel-position'
+const SELECTION_KEY = 'tbx-page:selected-node'
 const DEFAULT_PANEL_POSITION = 22
 const NARROW_VIEWPORT_QUERY = '(max-width: 768px)'
 
@@ -107,8 +107,8 @@ function findPath (node: MenuNode, targetId: string, trail: MenuNode[] = []): Me
   return null
 }
 
-@customElement('tbx-page-menu')
-export class TbxPageMenu extends LitElement {
+@customElement('tbx-page')
+export class TbxPage extends LitElement {
   @property({ type: String, attribute: 'page-title' })
     pageTitle: string = 'ToolboxUI'
 
@@ -548,6 +548,6 @@ export class TbxPageMenu extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'tbx-page-menu': TbxPageMenu
+    'tbx-page': TbxPage
   }
 }

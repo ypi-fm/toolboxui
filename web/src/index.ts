@@ -16,7 +16,7 @@ import './grid'
 import './markdown'
 import './clock'
 import './theme-toggle'
-import './page-menu'
+import './page'
 
 // Configure Shoelace asset lookup (icons, etc.)
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
