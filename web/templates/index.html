@@ -3,18 +3,45 @@
   <head>
     <meta charset="utf-8" />
     <title>ToolboxUI</title>
+    <script>
+      // Apply saved theme (or OS default) before modules load to reduce flashing.
+      (() => {
+        const root = document.documentElement
+        const darkClass = 'sl-theme-dark'
+        const lightClass = 'sl-theme-light'
+        let theme = 'light'
+
+        try {
+          const stored = localStorage.getItem('tbx-theme')
+          if (stored === 'dark' || stored === 'light') {
+            theme = stored
+          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark'
+          }
+        } catch (_) {
+          // Storage may be unavailable (private mode etc.); fall back to defaults.
+        }
+
+        root.classList.remove(darkClass, lightClass)
+        root.classList.add(theme === 'dark' ? darkClass : lightClass)
+        root.style.colorScheme = theme
+      })()
+    </script>
     <link rel="stylesheet" href="{{.CSS}}" />
     <script type="module" src="{{.JS}}" defer></script>
   </head>
   <body>
-    <h1>ToolboxUI</h1>
+    <header class="page-header">
+      <h1>ToolboxUI</h1>
+      <tbx-theme-toggle></tbx-theme-toggle>
+    </header>
 
-  <sl-breadcrumb>
-    <sl-breadcrumb-item>Catalog</sl-breadcrumb-item>
-    <sl-breadcrumb-item>Clothing</sl-breadcrumb-item>
-    <sl-breadcrumb-item>Women's</sl-breadcrumb-item>
-    <sl-breadcrumb-item>Shirts &amp; Tops</sl-breadcrumb-item>
-  </sl-breadcrumb>
+    <sl-breadcrumb>
+      <sl-breadcrumb-item>Catalog</sl-breadcrumb-item>
+      <sl-breadcrumb-item>Clothing</sl-breadcrumb-item>
+      <sl-breadcrumb-item>Women's</sl-breadcrumb-item>
+      <sl-breadcrumb-item>Shirts &amp; Tops</sl-breadcrumb-item>
+    </sl-breadcrumb>
 
     <h2>Chart Component</h2>
     <tbx-chart></tbx-chart>
