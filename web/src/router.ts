@@ -6,6 +6,7 @@ import { repeat } from 'lit/directives/repeat.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb/breadcrumb.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb-item/breadcrumb-item.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js'
+import '@shoelace-style/shoelace/dist/components/icon/icon.js'
 import '@shoelace-style/shoelace/dist/components/tree/tree.js'
 import '@shoelace-style/shoelace/dist/components/tree-item/tree-item.js'
 
@@ -19,6 +20,7 @@ type TreeSelectionEvent = CustomEvent<{
 interface RouteNode {
   route: string
   title: string
+  icon: string | null
   children: RouteNode[]
 }
 
@@ -26,6 +28,7 @@ interface RoutedPage {
   element: TbxPage
   route: string
   title: string
+  icon: string | null
   parentRoute: string | null
 }
 
@@ -121,7 +124,12 @@ function subtractRoute (path: string, route: string): string | null {
 function buildRouteTree (pages: RoutedPage[]): RouteNode[] {
   const nodeMap = new Map<string, RouteNode>()
   for (const page of pages) {
-    nodeMap.set(page.route, { route: page.route, title: page.title, children: [] })
+    nodeMap.set(page.route, {
+      route: page.route,
+      title: page.title,
+      icon: page.icon,
+      children: []
+    })
   }
 
   const roots: RouteNode[] = []
@@ -181,6 +189,7 @@ export class TbxRouter extends LitElement {
   private isInitialised = false
   private storedRoutePreference: string | null = null
   private basePath = ''
+  private assetBasePath = ''
   private expandedRouteSet: Set<string> = new Set()
 
   static styles = css`
@@ -189,13 +198,14 @@ export class TbxRouter extends LitElement {
       --page-shell-padding-inline: clamp(0.75rem, 2vw, 1.5rem);
       --page-shell-padding-block: clamp(0.85rem, 2vw, 1.5rem);
       --page-surface: var(--sl-color-neutral-0);
-      --tree-panel-width: 25%;
+      --tree-panel-width: clamp(280px, 25%, 320px);
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
       width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
+      background-color: var(--page-surface);
     }
 
     :host-context(.sl-theme-dark) {
@@ -232,6 +242,15 @@ export class TbxRouter extends LitElement {
       margin: 0;
       flex: 1 1 auto;
       min-width: 0;
+    }
+
+    header.page-header h1 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header.page-header h1 a:focus-visible {
+      text-decoration: underline;
     }
 
     header.page-header tbx-theme-toggle {
@@ -323,6 +342,13 @@ export class TbxRouter extends LitElement {
 
     nav.tree-panel sl-tree {
       min-height: 100%;
+    }
+
+    nav.tree-panel sl-tree.tree-with-icons sl-tree-item sl-icon {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1.05em;
+      margin-inline-end: 0.5rem;
     }
 
     nav.tree-panel sl-tree::part(base) {
@@ -418,6 +444,17 @@ export class TbxRouter extends LitElement {
 
   connectedCallback (): void {
     super.connectedCallback()
+
+    if (isBrowser() && this.assetBasePath === '') {
+      const inferredBase = this.detectAssetBasePath()
+      if (inferredBase !== '') {
+        this.assetBasePath = inferredBase
+        if (this.basePath === '') {
+          this.basePath = inferredBase
+        }
+      }
+    }
+
     this.setupViewportWatcher()
     this.restoreState()
     if (isBrowser()) {
@@ -576,6 +613,35 @@ export class TbxRouter extends LitElement {
     }
   }
 
+  private detectAssetBasePath (): string {
+    if (!isBrowser()) return ''
+
+    const selectors = [
+      'script[type="module"][src]',
+      'link[rel="modulepreload"][href]',
+      'link[rel="stylesheet"][href]'
+    ] as const
+
+    for (const selector of selectors) {
+      const element = document.querySelector(selector)
+      if (element == null) continue
+      const source = element instanceof HTMLScriptElement ? element.getAttribute('src') : element.getAttribute('href')
+      if (source == null || source.trim() === '') continue
+      try {
+        const url = new URL(source, window.location.origin)
+        const index = url.pathname.indexOf('/assets/')
+        if (index >= 0) {
+          const base = url.pathname.slice(0, index)
+          return normalizeBase(base)
+        }
+      } catch {
+        // Ignore invalid URLs and keep looking
+      }
+    }
+
+    return ''
+  }
+
   private refreshPages (): void {
     const slot = this.contentSlot
     if (slot == null) return
@@ -591,6 +657,8 @@ export class TbxRouter extends LitElement {
       const pageElement = element as TbxPage
       const normalizedRoute = normalizeRoute(pageElement.route)
       const normalizedTitle = pageElement.title.trim() !== '' ? pageElement.title.trim() : normalizedRoute
+      const iconValue = pageElement.icon.trim()
+      const normalizedIcon = iconValue !== '' ? iconValue : null
       if (!seen.has(normalizedRoute)) {
         if (pageElement.route !== normalizedRoute) {
           pageElement.route = normalizedRoute
@@ -599,6 +667,7 @@ export class TbxRouter extends LitElement {
           element: pageElement,
           route: normalizedRoute,
           title: normalizedTitle,
+          icon: normalizedIcon,
           parentRoute: getParentRoute(normalizedRoute)
         })
         seen.add(normalizedRoute)
@@ -619,18 +688,32 @@ export class TbxRouter extends LitElement {
   private resolveRouteFromPath (path: string): { basePath: string, route: string | null } {
     const normalizedPath = normalizePath(path)
     const routes = [...this.pages.map(page => page.route)].sort((a, b) => b.length - a.length)
+    const assetBase = this.assetBasePath
 
     for (const route of routes) {
       const baseCandidate = subtractRoute(normalizedPath, route)
       if (baseCandidate == null) continue
-      const basePath = normalizeBase(baseCandidate)
-      const expected = joinPath(basePath, route)
+      const normalizedBase = normalizeBase(baseCandidate)
+
+      if (route === '/') {
+        const expectedBase = assetBase !== '' ? assetBase : this.basePath
+        if (expectedBase === '') {
+          if (normalizedBase !== '') {
+            continue
+          }
+        } else if (normalizedBase !== expectedBase) {
+          continue
+        }
+      }
+
+      const expected = joinPath(normalizedBase, route)
       if (normalizePath(expected) === normalizedPath) {
-        return { basePath, route }
+        return { basePath: normalizedBase, route }
       }
     }
 
-    return { basePath: this.basePath, route: null }
+    const fallbackBase = assetBase !== '' ? assetBase : this.basePath
+    return { basePath: fallbackBase, route: null }
   }
 
   private syncRouteWithLocation (isInitial = false): void {
@@ -797,6 +880,7 @@ export class TbxRouter extends LitElement {
       const isExpanded = this.expandedRouteSet.has(node.route)
       const isSelected = node.route === this.activeRoute
       const hasChildren = node.children.length > 0
+      const iconName = node.icon
 
       return html`
         <sl-tree-item
@@ -805,6 +889,7 @@ export class TbxRouter extends LitElement {
           ?expanded=${isExpanded}
           ?selected=${isSelected}
         >
+          ${iconName != null ? html`<sl-icon name=${iconName}></sl-icon>` : nothing}
           ${node.title}
           ${hasChildren ? this.renderTree(node.children) : nothing}
         </sl-tree-item>
@@ -856,6 +941,23 @@ export class TbxRouter extends LitElement {
     `
   }
 
+  private readonly handleHomeButtonClick = (): void => {
+    if (!this.hasRoute('/')) return
+    if (this.activeRoute === '/') return
+    this.setActiveRoute('/')
+  }
+
+  private readonly handleHomeLinkClick = (event: MouseEvent): void => {
+    if (event.defaultPrevented) return
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return
+    }
+    event.preventDefault()
+    if (this.activeRoute !== '/') {
+      this.setActiveRoute('/')
+    }
+  }
+
   render (): TemplateResult {
     const shellClass = this.panelOpen ? 'content-shell panel-open' : 'content-shell panel-collapsed'
 
@@ -867,6 +969,7 @@ export class TbxRouter extends LitElement {
           >
             <div class="tree-scroll-container">
               <sl-tree
+                class="tree-with-icons"
                 selection="single"
                 tabindex="0"
                 @sl-selection-change=${this.handleTreeSelection}
@@ -883,7 +986,9 @@ export class TbxRouter extends LitElement {
     return html`
       <div class="page-shell">
         <header class="page-header">
-          <h1>${this.title}</h1>
+          <h1>
+            <a href="/" @click=${this.handleHomeLinkClick}>${this.title}</a>
+          </h1>
           <tbx-theme-toggle></tbx-theme-toggle>
         </header>
 
@@ -892,6 +997,11 @@ export class TbxRouter extends LitElement {
             name="list"
             label=${this.panelOpen ? 'Hide navigation menu' : 'Show navigation menu'}
             @click=${this.handlePanelToggle}
+          ></sl-icon-button>
+          <sl-icon-button
+            name="house-fill"
+            label="Go to home"
+            @click=${this.handleHomeButtonClick}
           ></sl-icon-button>
           ${this.renderBreadcrumbs()}
         </div>

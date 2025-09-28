@@ -23,6 +23,11 @@ function normalizeTitle (input: string | null | undefined): string {
   return input.trim()
 }
 
+function normalizeIcon (input: string | null | undefined): string {
+  if (input == null) return ''
+  return input.trim()
+}
+
 @customElement('tbx-page')
 export class TbxPage extends LitElement {
   @property({ type: String, reflect: true })
@@ -30,6 +35,9 @@ export class TbxPage extends LitElement {
 
   @property({ type: String, reflect: true })
     route: string = '/'
+
+  @property({ type: String, reflect: true })
+    icon: string = ''
 
   static styles = css`
     :host {
@@ -81,6 +89,13 @@ export class TbxPage extends LitElement {
       const normalizedTitle = normalizeTitle(this.title)
       if (normalizedTitle !== this.title) {
         this.title = normalizedTitle
+      }
+    }
+
+    if (changed.has('icon')) {
+      const normalizedIcon = normalizeIcon(this.icon)
+      if (normalizedIcon !== this.icon) {
+        this.icon = normalizedIcon
       }
     }
   }

@@ -8,6 +8,7 @@
       // Apply saved theme (or OS default) before modules load to reduce flashing.
       (() => {
         const root = document.documentElement
+        root.classList.add('js')
         const darkClass = 'sl-theme-dark'
         const lightClass = 'sl-theme-light'
         let theme = 'light'
@@ -33,7 +34,7 @@
   </head>
   <body>
     <tbx-router title="ToolboxUI">
-      <tbx-page title="Home" route="/">
+      <tbx-page title="Home" route="/" icon="house">
         <h2>Chart Component</h2>
         <tbx-chart></tbx-chart>
 
@@ -63,15 +64,15 @@ $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \
         <tbx-console></tbx-console>
       </tbx-page>
 
-      <tbx-page title="Catalog" route="/catalog">
+      <tbx-page title="Catalog" route="/catalog" icon="collection">
         <p>Select a catalog section to explore.</p>
       </tbx-page>
 
-      <tbx-page title="Clothing" route="/catalog/clothing">
+      <tbx-page title="Clothing" route="/catalog/clothing" icon="tag">
         <p>Choose a clothing category for more details.</p>
       </tbx-page>
 
-      <tbx-page title="Women's" route="/catalog/clothing/womens">
+      <tbx-page title="Women's" route="/catalog/clothing/womens" icon="gender-female">
         <p>Browse the women's catalog collections.</p>
       </tbx-page>
 
@@ -83,7 +84,7 @@ $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \
         <p>Stay warm with our selection of outerwear.</p>
       </tbx-page>
 
-      <tbx-page title="Men's" route="/catalog/clothing/mens">
+      <tbx-page title="Men's" route="/catalog/clothing/mens" icon="gender-male">
         <p>Browse the men's catalog collections.</p>
       </tbx-page>
 
@@ -95,15 +96,15 @@ $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \
         <p>Explore pants designed for any occasion.</p>
       </tbx-page>
 
-      <tbx-page title="Accessories" route="/catalog/accessories">
+      <tbx-page title="Accessories" route="/catalog/accessories" icon="gem">
         <p>Complete your look with accessories.</p>
       </tbx-page>
 
-      <tbx-page title="Bags" route="/catalog/accessories/bags">
+      <tbx-page title="Bags" route="/catalog/accessories/bags" icon="bag">
         <p>Discover bags for travel, work, and more.</p>
       </tbx-page>
 
-      <tbx-page title="Jewelry" route="/catalog/accessories/jewelry">
+      <tbx-page title="Jewelry" route="/catalog/accessories/jewelry" icon="diamond">
         <p>Shine with statement jewelry pieces.</p>
       </tbx-page>
     </tbx-router>

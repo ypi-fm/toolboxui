@@ -16,6 +16,15 @@ body {
   line-height: 1.5;
 }
 
+/* Avoid content flash: hide tbx pages until the router marks one active. */
+html.js tbx-router > tbx-page {
+  display: none;
+}
+
+html.js tbx-router > tbx-page[data-active] {
+  display: block;
+}
+
 @media (max-width: 600px) {
   body {
     font-size: 1.05rem;
