@@ -15,7 +15,10 @@
     "@xterm/xterm": "^5.5.0",
     "lit": "^3.3.1",
     "marked": "^16.2.1",
-    "marked-katex-extension": "^5.1.5"
+    "marked-katex-extension": "^5.1.5",
+    "vega": "^5.33.0",
+    "vega-embed": "^6.24.0",
+    "vega-lite": "^5.23.0"
   },
   "devDependencies": {
     "@types/katex": "^0.16.7",
