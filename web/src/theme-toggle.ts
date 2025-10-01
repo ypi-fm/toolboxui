@@ -1,7 +1,7 @@
 import '@shoelace-style/shoelace/dist/components/switch/switch.js'
 import '@shoelace-style/shoelace/dist/components/icon/icon.js'
 
-type ThemeName = 'light' | 'dark'
+export type ThemeName = 'light' | 'dark'
 
 const THEME_STORAGE_KEY = 'tbx-theme'
 const DARK_CLASS = 'sl-theme-dark'
