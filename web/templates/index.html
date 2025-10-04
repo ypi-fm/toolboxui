@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <script>
+      // Apply saved theme (or OS default) before modules load to reduce flashing.
+      (() => {
+        const root = document.documentElement
+        root.classList.add('js')
+        const darkClass = 'sl-theme-dark'
+        const lightClass = 'sl-theme-light'
+        let theme = 'light'
+
+        try {
+          const stored = localStorage.getItem('tbx-theme')
+          if (stored === 'dark' || stored === 'light') {
+            theme = stored
+          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark'
+          }
+        } catch (_) {
+          // Storage may be unavailable (private mode etc.); fall back to defaults.
+        }
+
+        root.classList.remove(darkClass, lightClass)
+        root.classList.add(theme === 'dark' ? darkClass : lightClass)
+        root.style.colorScheme = theme
+      })()
+    </script>
+    <link rel="stylesheet" href="{{.CSS}}" />
+    <script type="module" src="{{.JS}}" defer></script>
+  </head>
+  <body>
+    <tbx-router title="ToolboxUI">
+      <tbx-page title="Home" route="/" icon="house">
+        <h2>Chart Component</h2>
+        <tbx-chart></tbx-chart>
+
+        <h2>Grid Component</h2>
+        <tbx-grid></tbx-grid>
+
+        <h2>Clock Component</h2>
+        <tbx-clock timezone="UTC"></tbx-clock>
+        <tbx-clock timezone="America/New_York"></tbx-clock>
+        <tbx-clock timezone="America/Chicago"></tbx-clock>
+        <tbx-clock timezone="America/Denver"></tbx-clock>
+        <tbx-clock timezone="America/Los_Angeles"></tbx-clock>
+
+        <h2>Form Component</h2>
+        <tbx-form></tbx-form>
+
+        <h2>Markdown Component</h2>
+        <tbx-markdown>
+          <script type="text/markdown">
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+          </script>
+        </tbx-markdown>
+
+        <h2>Console Component</h2>
+        <tbx-console></tbx-console>
+      </tbx-page>
+
+      <tbx-page title="Catalog" route="/catalog" icon="collection">
+        <p>Select a catalog section to explore.</p>
+      </tbx-page>
+
+      <tbx-page title="Clothing" route="/catalog/clothing" icon="tag">
+        <p>Choose a clothing category for more details.</p>
+      </tbx-page>
+
+      <tbx-page title="Women's" route="/catalog/clothing/womens" icon="gender-female">
+        <p>Browse the women's catalog collections.</p>
+      </tbx-page>
+
+      <tbx-page title="Shirts &amp; Tops" route="/catalog/clothing/womens/shirtsandtops">
+        <p>Find featured shirts and tops for women.</p>
+      </tbx-page>
+
+      <tbx-page title="Outerwear" route="/catalog/clothing/womens/outerwear">
+        <p>Stay warm with our selection of outerwear.</p>
+      </tbx-page>
+
+      <tbx-page title="Men's" route="/catalog/clothing/mens" icon="gender-male">
+        <p>Browse the men's catalog collections.</p>
+      </tbx-page>
+
+      <tbx-page title="Shirts" route="/catalog/clothing/mens/shirts">
+        <p>Find men's shirts in a variety of styles.</p>
+      </tbx-page>
+
+      <tbx-page title="Pants" route="/catalog/clothing/mens/pants">
+        <p>Explore pants designed for any occasion.</p>
+      </tbx-page>
+
+      <tbx-page title="Accessories" route="/catalog/accessories" icon="gem">
+        <p>Complete your look with accessories.</p>
+      </tbx-page>
+
+      <tbx-page title="Bags" route="/catalog/accessories/bags" icon="bag">
+        <p>Discover bags for travel, work, and more.</p>
+      </tbx-page>
+
+      <tbx-page title="Jewelry" route="/catalog/accessories/jewelry" icon="diamond">
+        <p>Shine with statement jewelry pieces.</p>
+      </tbx-page>
+    </tbx-router>
+  </body>
+</html>

@@ -10,3 +10,6 @@ include_ext = ["go", "tpl", "tmpl", "html", "js", "css"]
 
 [log]
 time = true
+
+[proxy]
+enabled = false

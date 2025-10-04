@@ -5,10 +5,14 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
+    // Decorator support
+    "experimentalDecorators": true,
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "esnext",
     "target": "es2020",
+    "moduleResolution": "bundler",
     "types": [],
 
     // Other Outputs
@@ -31,7 +35,7 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",

@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ypi-fm/toolboxui"
+)
 
 func main() {
-	fmt.Println("ToolboxUI")
+	ui := &toolboxui.ToolboxUI{}
+	if err := ui.Start(); err != nil {
+		fmt.Println("Server error:", err)
+	}
 }
